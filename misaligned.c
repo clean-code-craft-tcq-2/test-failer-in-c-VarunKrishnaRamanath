@@ -61,6 +61,7 @@ void printToConsole(const char* string, int ColourPairNum, const char* majorColo
 {
     ColorPair colorPair = GetColorFromPairNumber(ColourPairNum);
 
+    printf(string, ColourPairNum, majorColor, minorColor);
     if((MajorColorNames[colorPair.majorColor] != majorColor)||(MinorColorNames[colorPair.minorColor] == minorColor))
     {
         printf("Incorrect Colour pair %s and %s for given PairNumber %d\n", majorColor, minorColor, ColourPairNum);
