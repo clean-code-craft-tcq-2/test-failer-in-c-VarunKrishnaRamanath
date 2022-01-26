@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <assert.h>
-#include "TemperatureAlerter.h"
 
 #define ALERTER_TEST_MODE          1
 #define ALERTER_PRODUCTION_MODE    0
