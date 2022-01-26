@@ -1,18 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "misaligned_PrintColourPair.h"
 
 #define MISALIGNED_TEST_MODE          1
 #define MISALIGNED_PRODUCTION_MODE    0
 
 /*********************************** core function ****************************************/
-
-#include <stdio.h>
-#include "misaligned_PrintColourPair.h"
-
 #if (MISALIGNED_TEST_MODE)
-#include "StubPrintToConsole.h"
 
 #define PRINT   printToConsole
 
