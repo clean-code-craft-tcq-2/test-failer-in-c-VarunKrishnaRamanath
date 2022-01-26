@@ -3,6 +3,8 @@
 
 #define ALERTER_TEST_MODE          1
 #define ALERTER_PRODUCTION_MODE    0
+
+int networkAlertStub(float celcius);
 /***************************************************core*************************************/
 
 #if ALERTER_PRODUCTION_MODE
