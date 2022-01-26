@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "TShirt_Test.h"
 
 /********************* Core function *****************/
 
@@ -19,8 +18,6 @@ char size(int inch) {
 
 #include <stdio.h>
 #include <assert.h>
-#include "EstimateTShirtSize.h"
-#include "TShirt_Test.h"
 
 #define MINIMUM_SIZE_IN_INCH_FOR_S    32
 #define MAXIMUM_SIZE_IN_INCH_FOR_S    38
