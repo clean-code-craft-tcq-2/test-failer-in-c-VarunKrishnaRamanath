@@ -5,6 +5,7 @@
 #define MISALIGNED_TEST_MODE          1
 #define MISALIGNED_PRODUCTION_MODE    0
 
+void printToConsole(const char* string, int ColourPairNum, const char* majorColor, const char* minorColor);
 /*********************************** core function ****************************************/
 #if (MISALIGNED_TEST_MODE)
 
@@ -28,6 +29,26 @@ int printColorMap() {
 }
 
 /*********************************** Test code *****************************************/
+typedef enum {
+    WHITE = 0,
+    RED,
+    BLACK,
+    YELLOW,
+    VIOLET
+}MajorColor;
+
+typedef enum {
+    BLUE = 0,
+    ORANGE,
+    GREEN,
+    BROWN,
+    SLATE
+}MinorColor;
+
+typedef struct {
+    MajorColor majorColor;
+    MinorColor minorColor;
+} ColorPair;
 
 const char* MajorColorNames[] = {
     "White", "Red", "Black", "Yellow", "Violet"
