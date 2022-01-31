@@ -9,10 +9,10 @@
 
 /********************* Core function *****************/
 
-char GetTShirtSizeFromSizeInInch(int SizeInInch) {
+char TShirtSizeFromSizeInInch(int SizeInInch) {
     char sizeName = '\0';
     
-    if(SizeInInch < MINIMUM_SIZE_IN_INCH_FOR_S) 
+    if(SizeInInch >= MINIMUM_SIZE_IN_INCH_FOR_S && SizeInInch < MAXIMUM_SIZE_IN_INCH_FOR_S) 
     {
         sizeName = 'S';
     } 
@@ -20,7 +20,7 @@ char GetTShirtSizeFromSizeInInch(int SizeInInch) {
     {
         sizeName = 'M';
     } 
-    else if(SizeInInch > MAXIMUM_SIZE_IN_INCH_FOR_M) 
+    else if(SizeInInch >= MINIMUM_SIZE_IN_INCH_FOR_L && SizeInInch < MAXIMUM_SIZE_IN_INCH_FOR_L) 
     {
         sizeName = 'L';
     }
@@ -36,42 +36,42 @@ char GetTShirtSizeFromSizeInInch(int SizeInInch) {
 #include <stdio.h>
 #include <assert.h>
 
-static bool TShirtSizeIsCorrect(int MinSize, int MaxSize, char SizeStr)
+static bool TShirtSizeIsCorrect(int MinSize, int MaxSize, char expectedSize)
 {
-    boolean TshirtSizeCorrect = TRUE;
+    bool TshirtSizeCorrect = TRUE;
+    int tShirtSize;
 
     for(tShirtSize = MinSize;tShirtSize <= MaxSize;tShirtSize++)
     {
-        if(size(tShirtSize) != SizeStr)
+        if(TShirtSizeFromSizeInInch(tShirtSize) != expectedSize)
         {
             TshirtSizeCorrect = FALSE;
         }
     }
+    
+    return TshirtSizeCorrect;
 }
 
 static void verifyTShirtSize(int MinSize, int MaxSize, char SizeStr)
 {
     if(TShirtSizeIsCorrect(MinSize, MaxSize, SizeStr))
     {
-        printf("Correct size '%c' for %d inch Tshirt\n", SizeStr, tShirtSize);
+        printf("Correct size %c sent for TShirt range %d to %d \n", SizeStr, MinSize, MaxSize);
     }
     else
     {
-        printf("Incorrect size '%c' for %d inch Tshirt\n", SizeStr, tShirtSize);
-        assert(0);
+        printf("Incorrect size %c sent for TShirt range %d to %d \n", SizeStr, MinSize, MaxSize);
+        assert(0);   
     }
-       
 }
 
 void testTShirtSize(void)
 {
-
-    verifyTShirtSize(0x80000000, MAXIMUM_SIZE_IN_INCH_FOR_S-1, '\0');
+    verifyTShirtSize(0x80000000, (MAXIMUM_SIZE_IN_INCH_FOR_S-1), '\0');
     verifyTShirtSize(MINIMUM_SIZE_IN_INCH_FOR_S, MAXIMUM_SIZE_IN_INCH_FOR_S, 'S');
     verifyTShirtSize(MINIMUM_SIZE_IN_INCH_FOR_M, MAXIMUM_SIZE_IN_INCH_FOR_M, 'M');
     verifyTShirtSize(MINIMUM_SIZE_IN_INCH_FOR_L, MAXIMUM_SIZE_IN_INCH_FOR_L, 'L');
     verifyTShirtSize(MAXIMUM_SIZE_IN_INCH_FOR_L, 0x7FFFFFFF, '\0');
-
 }
 
 /**************** main *******************************/
