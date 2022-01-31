@@ -9,7 +9,7 @@
 
 /********************* Core function *****************/
 
-char TShirtSizeFromSizeInInch(int SizeInInch) {
+char TShirtSizeFromSizeInInch(unsigned char SizeInInch) {
     char sizeName = '\0';
     
     if(SizeInInch >= MINIMUM_SIZE_IN_INCH_FOR_S && SizeInInch < MAXIMUM_SIZE_IN_INCH_FOR_S) 
@@ -36,7 +36,7 @@ char TShirtSizeFromSizeInInch(int SizeInInch) {
 #include <stdio.h>
 #include <assert.h>
 
-static bool TShirtSizeIsCorrect(int MinSize, int MaxSize, char expectedSize)
+static bool TShirtSizeIsCorrect(unsigned char MinSize, unsigned char MaxSize, char expectedSize)
 {
     bool TshirtSizeCorrect = TRUE;
     int tShirtSize;
@@ -52,7 +52,7 @@ static bool TShirtSizeIsCorrect(int MinSize, int MaxSize, char expectedSize)
     return TshirtSizeCorrect;
 }
 
-static void verifyTShirtSize(int MinSize, int MaxSize, char SizeStr)
+static void verifyTShirtSize(unsigned char MinSize, unsigned char MaxSize, char SizeStr)
 {
     if(TShirtSizeIsCorrect(MinSize, MaxSize, SizeStr))
     {
@@ -67,11 +67,11 @@ static void verifyTShirtSize(int MinSize, int MaxSize, char SizeStr)
 
 void testTShirtSize(void)
 {
-    verifyTShirtSize(0x80000000, (MAXIMUM_SIZE_IN_INCH_FOR_S-1), '\0');
+    verifyTShirtSize(0, (MINIMUM_SIZE_IN_INCH_FOR_S-1), '\0');
     verifyTShirtSize(MINIMUM_SIZE_IN_INCH_FOR_S, MAXIMUM_SIZE_IN_INCH_FOR_S, 'S');
     verifyTShirtSize(MINIMUM_SIZE_IN_INCH_FOR_M, MAXIMUM_SIZE_IN_INCH_FOR_M, 'M');
     verifyTShirtSize(MINIMUM_SIZE_IN_INCH_FOR_L, MAXIMUM_SIZE_IN_INCH_FOR_L, 'L');
-    verifyTShirtSize(MAXIMUM_SIZE_IN_INCH_FOR_L, 0x7FFFFFFF, '\0');
+    verifyTShirtSize(MAXIMUM_SIZE_IN_INCH_FOR_L, 255, '\0');
 }
 
 /**************** main *******************************/
