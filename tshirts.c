@@ -1,15 +1,32 @@
 #include <stdio.h>
 
+#define MINIMUM_SIZE_IN_INCH_FOR_S    32
+#define MAXIMUM_SIZE_IN_INCH_FOR_S    38
+#define MINIMUM_SIZE_IN_INCH_FOR_M    38
+#define MAXIMUM_SIZE_IN_INCH_FOR_M    42
+#define MINIMUM_SIZE_IN_INCH_FOR_L    43
+#define MAXIMUM_SIZE_IN_INCH_FOR_L    45
+
 /********************* Core function *****************/
 
-char size(int inch) {
+char GetTShirtSizeFromSizeInInch(int SizeInInch) {
     char sizeName = '\0';
-    if(inch < 38) {
+    
+    if(SizeInInch < MINIMUM_SIZE_IN_INCH_FOR_S) 
+    {
         sizeName = 'S';
-    } else if(inch > 38 && inch < 42) {
+    } 
+    else if(SizeInInch >= MINIMUM_SIZE_IN_INCH_FOR_M && SizeInInch < MAXIMUM_SIZE_IN_INCH_FOR_M) 
+    {
         sizeName = 'M';
-    } else if(inch > 42) {
+    } 
+    else if(SizeInInch > MAXIMUM_SIZE_IN_INCH_FOR_M) 
+    {
         sizeName = 'L';
+    }
+    else
+    {
+        sizeName = '\0';
     }
     return sizeName;
 }
@@ -19,36 +36,41 @@ char size(int inch) {
 #include <stdio.h>
 #include <assert.h>
 
-#define MINIMUM_SIZE_IN_INCH_FOR_S    32
-#define MAXIMUM_SIZE_IN_INCH_FOR_S    38
-#define MINIMUM_SIZE_IN_INCH_FOR_M    39
-#define MAXIMUM_SIZE_IN_INCH_FOR_M    42
-#define MINIMUM_SIZE_IN_INCH_FOR_L    43
-#define MAXIMUM_SIZE_IN_INCH_FOR_L    45
-
-static void verifyTShirtSize(int MinSize, int MaxSize, char SizeStr)
+static boolean TShirtSizeIsCorrect(int MinSize, int MaxSize, char SizeStr)
 {
-    int tShirtSize = 0;
+    boolean TshirtSizeCorrect = TRUE;
 
     for(tShirtSize = MinSize;tShirtSize <= MaxSize;tShirtSize++)
     {
         if(size(tShirtSize) != SizeStr)
         {
-            printf("Incorrect size '%c' for %d inch Tshirt\n", SizeStr, tShirtSize);
-            assert(size(tShirtSize) == SizeStr);
+            TshirtSizeCorrect = FALSE;
         }
     }
-    printf("T Shirt size is correct from size %d to %d\n", MinSize, MaxSize);
+}
+
+static void verifyTShirtSize(int MinSize, int MaxSize, char SizeStr)
+{
+    if(TShirtSizeIsCorrect(int MinSize, int MaxSize, char SizeStr))
+    {
+        printf("Correct size '%c' for %d inch Tshirt\n", SizeStr, tShirtSize);
+    }
+    else
+    {
+        printf("Incorrect size '%c' for %d inch Tshirt\n", SizeStr, tShirtSize);
+        assert(0);
+    }
+       
 }
 
 void testTShirtSize(void)
 {
 
-    //verifyTShirtSize(0x80000000, MAXIMUM_SIZE_IN_INCH_FOR_S-1, '\0');
+    verifyTShirtSize(0x80000000, MAXIMUM_SIZE_IN_INCH_FOR_S-1, '\0');
     verifyTShirtSize(MINIMUM_SIZE_IN_INCH_FOR_S, MAXIMUM_SIZE_IN_INCH_FOR_S, 'S');
     verifyTShirtSize(MINIMUM_SIZE_IN_INCH_FOR_M, MAXIMUM_SIZE_IN_INCH_FOR_M, 'M');
     verifyTShirtSize(MINIMUM_SIZE_IN_INCH_FOR_L, MAXIMUM_SIZE_IN_INCH_FOR_L, 'L');
-    //verifyTShirtSize(MAXIMUM_SIZE_IN_INCH_FOR_L, 0x7FFFFFFF, '\0');
+    verifyTShirtSize(MAXIMUM_SIZE_IN_INCH_FOR_L, 0x7FFFFFFF, '\0');
 
 }
 
