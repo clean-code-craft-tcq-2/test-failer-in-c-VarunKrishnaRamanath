@@ -36,7 +36,7 @@ char GetTShirtSizeFromSizeInInch(int SizeInInch) {
 #include <stdio.h>
 #include <assert.h>
 
-static boolean TShirtSizeIsCorrect(int MinSize, int MaxSize, char SizeStr)
+static bool TShirtSizeIsCorrect(int MinSize, int MaxSize, char SizeStr)
 {
     boolean TshirtSizeCorrect = TRUE;
 
@@ -51,7 +51,7 @@ static boolean TShirtSizeIsCorrect(int MinSize, int MaxSize, char SizeStr)
 
 static void verifyTShirtSize(int MinSize, int MaxSize, char SizeStr)
 {
-    if(TShirtSizeIsCorrect(int MinSize, int MaxSize, char SizeStr))
+    if(TShirtSizeIsCorrect(MinSize, MaxSize, SizeStr))
     {
         printf("Correct size '%c' for %d inch Tshirt\n", SizeStr, tShirtSize);
     }
