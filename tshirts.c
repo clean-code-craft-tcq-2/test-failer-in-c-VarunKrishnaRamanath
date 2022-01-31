@@ -38,14 +38,14 @@ char TShirtSizeFromSizeInInch(unsigned char SizeInInch) {
 
 static bool TShirtSizeIsCorrect(unsigned char MinSize, unsigned char MaxSize, char expectedSize)
 {
-    bool TshirtSizeCorrect = TRUE;
+    bool TshirtSizeCorrect = true;
     int tShirtSize;
 
     for(tShirtSize = MinSize;tShirtSize <= MaxSize;tShirtSize++)
     {
         if(TShirtSizeFromSizeInInch(tShirtSize) != expectedSize)
         {
-            TshirtSizeCorrect = FALSE;
+            TshirtSizeCorrect = false;
         }
     }
     
