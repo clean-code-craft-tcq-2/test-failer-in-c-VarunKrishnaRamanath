@@ -62,7 +62,7 @@ static char* Stub_GetPrintString(unsigned int PairNumber, const char* l_majorCol
            (strcmp(l_minorColor, "Green")==0)||
            (strcmp(l_minorColor, "Brown")==0)||
            (strcmp(l_minorColor, "Slate")==0));
-    return "Test executed\n";
+    return "\0";
 }
 
 /************************************ main **************************************************/
