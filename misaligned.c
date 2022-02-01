@@ -37,7 +37,7 @@ void printColorMap(unsigned int (*fnPtr_getColourPairNumber)(int,int), char* (*f
         for(j = 0; j < 5; j++) {
             PairNumber = fnPtr_getColourPairNumber(i, j);
             strcpy(PrintString, fnPtr_GetPrintString(PairNumber, majorColor[i],minorColor[j]));
-            printf(PrintString);
+            printf("%s",PrintString);
         }
     }
 }
@@ -51,7 +51,8 @@ static unsigned int Stub_getColourPairNumber(int l_majorColorNum, int l_minorCol
 
 static char* Stub_GetPrintString(unsigned int PairNumber, const char* l_majorColor, const char* l_minorColor)
 {
-    static char PrintString = '\0'
+    static char PrintString = '\0';
+    
     assert((PairNumber != 0) && (PairNumber <= 25));
     assert((strcmp(l_majorColor, "White")==0)||
            (strcmp(l_majorColor, "Red")==0)||
@@ -63,6 +64,7 @@ static char* Stub_GetPrintString(unsigned int PairNumber, const char* l_majorCol
            (strcmp(l_minorColor, "Green")==0)||
            (strcmp(l_minorColor, "Brown")==0)||
            (strcmp(l_minorColor, "Slate")==0));
+    
     return &PrintString;
 }
 
