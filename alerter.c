@@ -59,12 +59,12 @@ void alertInCelcius(float farenheit, int (*funptr_networkAlert)(float))
 /************************************TEST*************************************************/
 
 static int Stub_networkAlertOk(float celcius) {
-
+    assert(celcius <= 200.0f);
     return 200;
 }
 
 static int Stub_networkAlertNotOk(float celcius) {
-
+    assert(celcius > 200.0f);
     return 500;
 }
 
@@ -120,10 +120,10 @@ int main() {
     assert(alertFailureCount == 0);
     alertInCelcius(203.6, Stub_networkAlertOk);
     assert(alertFailureCount == 0);
-    alertInCelcius(303.6, Stub_networkAlertNotOk);
-    assert(alertFailureCount == 1);
+    alertInCelcius(303.6, Stub_networkAlertOk);
+    assert(alertFailureCount == 0);
     alertInCelcius(400.5, Stub_networkAlertNotOk);
-    assert(alertFailureCount == 2);
+    assert(alertFailureCount == 1);
 
     printf("All is well (for sure)\n");
     return 0;
