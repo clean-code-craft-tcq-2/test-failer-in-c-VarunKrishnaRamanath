@@ -51,6 +51,7 @@ static unsigned int Stub_getColourPairNumber(int l_majorColorNum, int l_minorCol
 
 static char* Stub_GetPrintString(unsigned int PairNumber, const char* l_majorColor, const char* l_minorColor)
 {
+    char PrintString = '\0'
     assert((PairNumber != 0) && (PairNumber <= 25));
     assert((strcmp(l_majorColor, "White")==0)||
            (strcmp(l_majorColor, "Red")==0)||
@@ -62,7 +63,7 @@ static char* Stub_GetPrintString(unsigned int PairNumber, const char* l_majorCol
            (strcmp(l_minorColor, "Green")==0)||
            (strcmp(l_minorColor, "Brown")==0)||
            (strcmp(l_minorColor, "Slate")==0));
-    return "\0";
+    return &PrintString;
 }
 
 /************************************ main **************************************************/
