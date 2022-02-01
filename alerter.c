@@ -1,51 +1,18 @@
 #include <stdio.h>
 #include <assert.h>
 
-#define ALERTER_TEST_MODE          1
-#define ALERTER_PRODUCTION_MODE    0
-
-int networkAlertStub(float celcius);
-/***************************************************core*************************************/
-
-#if ALERTER_PRODUCTION_MODE
-#define NETWORKALERT    networkAlert
-#elif ALERTER_TEST_MODE
-#define NETWORKALERT    networkAlertStub
-#endif // ALERTER_TEST_MODE
-
-int alertFailureCount = 0;
-
-int networkAlert(float celcius) {
-    printf("ALERT: Temperature is %.1f celcius.\n", celcius);
-    // Return 200 for ok
-    // Return 500 for not-ok
-    // stub always succeeds and returns 200
-    return 200;
-}
-
-void alertInCelcius(float farenheit) {
-    float celcius = (farenheit - 32) * 5 / 9;
-    int returnCode = NETWORKALERT(celcius);
-    if (returnCode != 200) {
-        // non-ok response is not an error! Issues happen in life!
-        // let us keep a count of failures to report
-        // However, this code doesn't count failures!
-        // Add a test below to catch this bug. Alter the stub above, if needed.
-        alertFailureCount += 0;
-    }
-}
-
-
-
-/************************************TEST*************************************************/
-
 #define MINIMUM_TEMPERATURE_ACCEPTABLE  0.0f
 #define MAXIMUM_TEMPERATURE_ACCEPTABLE  200.0f
 
-int networkAlertStub(float celcius)
-{
-    int AlertValue = 0xFFu;
+static int Stub_networkAlertOk(float celcius);
+static int Stub_networkAlertNotOk(float celcius);
+/***************************************************core*************************************/
 
+int alertFailureCount = 0;
+
+static int networkAlert(float celcius) {
+
+    int AlertValue;
     if((celcius >= MINIMUM_TEMPERATURE_ACCEPTABLE) && (celcius <= MAXIMUM_TEMPERATURE_ACCEPTABLE))
     {
         AlertValue = 200;
@@ -53,22 +20,112 @@ int networkAlertStub(float celcius)
     else
     {
         printf("ALERT: Temperature is %.1f celcius.\n", celcius);
-        AlertValue = 500 ;
+        AlertValue = 500;
     }
     return AlertValue;
 }
 
-int main() {
-    alertInCelcius(103.6);
-    assert(alertFailureCount == 0);
-    alertInCelcius(203.6);
-    assert(alertFailureCount == 0);
-    alertInCelcius(303.6);
-    assert(alertFailureCount == 0);
-    alertInCelcius(400.5);
-    assert(alertFailureCount != 0);
+static float ConvertFarenheitToCelsius(float farenheit)
+{
+    printf("%f = %f degC, %d\n", farenheit, ((farenheit - 32) * 5 / 9), (int)(((farenheit - 32) * 5 / 9)*1000));
+    return (farenheit - 32) * 5 / 9;
+}
 
-    printf("%d alerts failed.\n", alertFailureCount);
-    printf("All is well (maybe!)\n");
+static void VerifyAlert(int AlertLevel)
+{
+    if(AlertLevel == 500)
+    {
+        if(alertFailureCount == 0xFFFFFFFF)
+        {
+            alertFailureCount = 0xFFFFFFFF; //capping the value to max possible value
+        }
+        else
+        {
+            alertFailureCount += 1;
+        }
+
+    }
+}
+
+void alertInCelcius(float farenheit, int (*funptr_networkAlert)(float))
+{
+    float celcius;
+    int returnCode;
+
+    celcius = ConvertFarenheitToCelsius(farenheit);
+    returnCode = funptr_networkAlert(celcius);
+    VerifyAlert(returnCode);
+}
+
+/************************************TEST*************************************************/
+
+static int Stub_networkAlertOk(float celcius) {
+
+    return 200;
+}
+
+static int Stub_networkAlertNotOk(float celcius) {
+
+    return 500;
+}
+
+/**************************** Main ***************************/
+
+int main() {
+
+    assert((int)(ConvertFarenheitToCelsius(103.6)*10000) == 397777); //Scaling the float value to 4 digit precision
+    assert((int)(ConvertFarenheitToCelsius(203.6)*10000) == 953333); //Scaling the float value to 4 digit precision
+    //assert((int)(ConvertFarenheitToCelsius(303.6)*10000) == 150888); //Scaling the float value to 4 digit precision
+    assert((int)(ConvertFarenheitToCelsius(400.5)*10000) == 204722); //Scaling the float value to 4 digit precision
+
+    assert(networkAlert(-1) == 500);
+    assert(networkAlert(13.6) == 200);
+    assert(networkAlert(103.6) == 200);
+    assert(networkAlert(203.6) == 500);
+    assert(networkAlert(303.6) == 500);
+    assert(networkAlert(400.5) == 500);
+
+    alertFailureCount= 0;
+
+    VerifyAlert(100);
+    assert(alertFailureCount == 0);
+    VerifyAlert(200);
+    assert(alertFailureCount == 0);
+    VerifyAlert(300);
+    assert(alertFailureCount == 0);
+    VerifyAlert(500);
+    assert(alertFailureCount == 1);
+    VerifyAlert(500);
+    assert(alertFailureCount == 2);
+    alertFailureCount = 50;
+    VerifyAlert(500);
+    assert(alertFailureCount == 51);
+    alertFailureCount = 0xFFFFFFFF;
+    VerifyAlert(500);
+    assert(alertFailureCount == 0xFFFFFFFF);
+
+    alertFailureCount= 0;
+
+    alertInCelcius(103.6, networkAlert);
+    assert(alertFailureCount == 0);
+    alertInCelcius(203.6, networkAlert);
+    assert(alertFailureCount == 0);
+    alertInCelcius(303.6, networkAlert);
+    assert(alertFailureCount == 0);
+    alertInCelcius(400.5, networkAlert);
+    assert(alertFailureCount == 1);
+
+    alertFailureCount= 0;
+
+    alertInCelcius(103.6, Stub_networkAlertOk);
+    assert(alertFailureCount == 0);
+    alertInCelcius(203.6, Stub_networkAlertOk);
+    assert(alertFailureCount == 0);
+    alertInCelcius(303.6, Stub_networkAlertNotOk);
+    assert(alertFailureCount == 1);
+    alertInCelcius(400.5, Stub_networkAlertOk);
+    assert(alertFailureCount == 2);
+
+    printf("All is well (for sure)\n");
     return 0;
 }
