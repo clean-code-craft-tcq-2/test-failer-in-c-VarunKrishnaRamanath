@@ -8,7 +8,7 @@ static int Stub_networkAlertOk(float celcius);
 static int Stub_networkAlertNotOk(float celcius);
 /***************************************************core*************************************/
 
-int alertFailureCount = 0;
+unsigned int alertFailureCount = 0;
 
 static int networkAlert(float celcius) {
 
