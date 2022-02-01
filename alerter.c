@@ -27,7 +27,6 @@ static int networkAlert(float celcius) {
 
 static float ConvertFarenheitToCelsius(float farenheit)
 {
-    printf("%f = %f degC, %d\n", farenheit, ((farenheit - 32) * 5 / 9), (int)(((farenheit - 32) * 5 / 9)*1000));
     return (farenheit - 32) * 5 / 9;
 }
 
@@ -73,10 +72,10 @@ static int Stub_networkAlertNotOk(float celcius) {
 
 int main() {
 
-    assert((int)(ConvertFarenheitToCelsius(103.6)*10000) == 397777); //Scaling the float value to 4 digit precision
-    assert((int)(ConvertFarenheitToCelsius(203.6)*10000) == 953333); //Scaling the float value to 4 digit precision
-    //assert((int)(ConvertFarenheitToCelsius(303.6)*10000) == 150888); //Scaling the float value to 4 digit precision
-    assert((int)(ConvertFarenheitToCelsius(400.5)*10000) == 204722); //Scaling the float value to 4 digit precision
+    assert((int)(ConvertFarenheitToCelsius(103.6)*1000) == 39777); //Scaling the float value to 3 digit precision
+    assert((int)(ConvertFarenheitToCelsius(203.6)*1000) == 95333); //Scaling the float value to 3 digit precision
+    assert((int)(ConvertFarenheitToCelsius(303.6)*1000) == 150888); //Scaling the float value to 3 digit precision
+    assert((int)(ConvertFarenheitToCelsius(400.5)*1000) == 204722); //Scaling the float value to 3 digit precision
 
     assert(networkAlert(-1) == 500);
     assert(networkAlert(13.6) == 200);
@@ -123,7 +122,7 @@ int main() {
     assert(alertFailureCount == 0);
     alertInCelcius(303.6, Stub_networkAlertNotOk);
     assert(alertFailureCount == 1);
-    alertInCelcius(400.5, Stub_networkAlertOk);
+    alertInCelcius(400.5, Stub_networkAlertNotOk);
     assert(alertFailureCount == 2);
 
     printf("All is well (for sure)\n");
