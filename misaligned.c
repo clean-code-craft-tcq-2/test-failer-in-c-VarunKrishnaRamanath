@@ -1,95 +1,127 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
-#define MISALIGNED_TEST_MODE          1
-#define MISALIGNED_PRODUCTION_MODE    0
+const char* majorColor[] = {"White", "Red", "Black", "Yellow", "Violet"};
+const char* minorColor[] = {"Blue", "Orange", "Green", "Brown", "Slate"};
 
-void printToConsole(const char* string, int ColourPairNum, const char* majorColor, const char* minorColor);
+static unsigned int Stub_getColourPairNumber(int l_majorColorNum, int l_minorColorNum);
+static char* Stub_GetPrintString(unsigned int PairNumber, const char* l_majorColor, const char* l_minorColor);
 /*********************************** core function ****************************************/
-#if (MISALIGNED_TEST_MODE)
+static unsigned int getColourPairNumber(int l_majorColorNum, int l_minorColorNum)
+{
+    unsigned int PairNumber = 0xFF;
+    if((l_majorColorNum < 5) && ((l_minorColorNum < 5)))
+    {
+        PairNumber = (l_majorColorNum*5) + l_minorColorNum + 1;
+    }
+    return PairNumber;
+}
 
-#define PRINT   printToConsole
+static char* GetPrintString(unsigned int PairNumber, const char* l_majorColor, const char* l_minorColor)
+{
+    static char PrintString[100] = "\0";
 
-#elif (MISALIGNED_PRODUCTION_MODE)
-#define PRINT   printf
-#endif
+    sprintf(PrintString, "%d\t%s\t%s\t\n", PairNumber, l_majorColor, l_minorColor);
 
-int printColorMap() {
-    const char* majorColor[] = {"White", "Red", "Black", "Yellow", "Violet"};
-    const char* minorColor[] = {"Blue", "Orange", "Green", "Brown", "Slate"};
+    return PrintString;
+}
 
+void printColorMap(unsigned int (*fnPtr_getColourPairNumber)(int,int), char* (*fnPtr_GetPrintString)(unsigned int,const char*,const char*)) {
+    unsigned int PairNumber;
+    char PrintString[100];
     int i = 0, j = 0;
+
     for(i = 0; i < 5; i++) {
         for(j = 0; j < 5; j++) {
-            PRINT("%d | %s | %s\n", i * 5 + j, majorColor[i], minorColor[i]);
+            PairNumber = fnPtr_getColourPairNumber(i, j);
+            strcpy(PrintString, fnPtr_GetPrintString(PairNumber, majorColor[i],minorColor[j]));
+            printf(PrintString);
         }
     }
-    return i * j;
 }
-
 /*********************************** Test code *****************************************/
-typedef enum {
-    WHITE = 0,
-    RED,
-    BLACK,
-    YELLOW,
-    VIOLET
-}MajorColor;
-
-typedef enum {
-    BLUE = 0,
-    ORANGE,
-    GREEN,
-    BROWN,
-    SLATE
-}MinorColor;
-
-typedef struct {
-    MajorColor majorColor;
-    MinorColor minorColor;
-} ColorPair;
-
-const char* MajorColorNames[] = {
-    "White", "Red", "Black", "Yellow", "Violet"
-};
-
-const char* MinorColorNames[] = {
-    "Blue", "Orange", "Green", "Brown", "Slate"
-};
-
-const int numberOfMajorColors = (sizeof(MajorColorNames) / sizeof(MajorColorNames[0]));
-
-const int numberOfMinorColors = (sizeof(MinorColorNames) / sizeof(MinorColorNames[0]));
-
-/*Functions*/
-
-ColorPair GetColorFromPairNumber(int pairNumber) {
-    ColorPair colorPair;
-    int zeroBasedPairNumber = pairNumber - 1;
-    colorPair.majorColor = (MajorColor)(zeroBasedPairNumber / numberOfMinorColors);
-    colorPair.minorColor = (MinorColor)(zeroBasedPairNumber % numberOfMinorColors);
-    return colorPair;
+static unsigned int Stub_getColourPairNumber(int l_majorColorNum, int l_minorColorNum)
+{
+    assert((l_majorColorNum >= 0) && (l_majorColorNum < 5));
+    assert((l_minorColorNum >= 0) && (l_minorColorNum < 5));
+    return 0;
 }
 
-void printToConsole(const char* string, int ColourPairNum, const char* majorColor, const char* minorColor)
+static char* Stub_GetPrintString(unsigned int PairNumber, const char* l_majorColor, const char* l_minorColor)
 {
-    ColorPair colorPair = GetColorFromPairNumber(ColourPairNum);
-
-    printf(string, ColourPairNum, majorColor, minorColor);
-    if((MajorColorNames[colorPair.majorColor] != majorColor)||(MinorColorNames[colorPair.minorColor] == minorColor))
-    {
-        printf("Incorrect Colour pair %s and %s for given PairNumber %d\n", majorColor, minorColor, ColourPairNum);
-        assert((MajorColorNames[colorPair.majorColor] == majorColor)&&(MinorColorNames[colorPair.minorColor] == minorColor));
-    }
-
+    assert((PairNumber != 0) && (PairNumber <= 25));
+    assert((strcmp(l_majorColor, "White")==0)||
+           (strcmp(l_majorColor, "Red")==0)||
+           (strcmp(l_majorColor, "Black")==0)||
+           (strcmp(l_majorColor, "Yellow")==0)||
+           (strcmp(l_majorColor, "Violet")==0));
+    assert((strcmp(l_minorColor, "Blue")==0)||
+           (strcmp(l_minorColor, "Orange")==0)||
+           (strcmp(l_minorColor, "Green")==0)||
+           (strcmp(l_minorColor, "Brown")==0)||
+           (strcmp(l_minorColor, "Slate")==0));
+    return "Test executed\n";
 }
 
 /************************************ main **************************************************/
 
 int main() {
-    int result = printColorMap();
-    assert(result == 25);
-    printf("All is well (maybe!)\n");
+    /* valid pair number checks*/
+    assert(getColourPairNumber(0, 0) == 1);
+    assert(getColourPairNumber(0, 1) == 2);
+    assert(getColourPairNumber(0, 2) == 3);
+    assert(getColourPairNumber(0, 3) == 4);
+    assert(getColourPairNumber(0, 4) == 5);
+
+    assert(getColourPairNumber(1, 0) == 6);
+    assert(getColourPairNumber(1, 1) == 7);
+    assert(getColourPairNumber(1, 2) == 8);
+    assert(getColourPairNumber(1, 3) == 9);
+    assert(getColourPairNumber(1, 4) == 10);
+
+    assert(getColourPairNumber(2, 0) == 11);
+    assert(getColourPairNumber(2, 1) == 12);
+    assert(getColourPairNumber(2, 2) == 13);
+    assert(getColourPairNumber(2, 3) == 14);
+    assert(getColourPairNumber(2, 4) == 15);
+
+    assert(getColourPairNumber(3, 0) == 16);
+    assert(getColourPairNumber(3, 1) == 17);
+    assert(getColourPairNumber(3, 2) == 18);
+    assert(getColourPairNumber(3, 3) == 19);
+    assert(getColourPairNumber(3, 4) == 20);
+
+    assert(getColourPairNumber(4, 0) == 21);
+    assert(getColourPairNumber(4, 1) == 22);
+    assert(getColourPairNumber(4, 2) == 23);
+    assert(getColourPairNumber(4, 3) == 24);
+    assert(getColourPairNumber(4, 4) == 25);
+
+    /* Invalid Pair number checks*/
+    assert(getColourPairNumber(5, 0) == 255);
+    assert(getColourPairNumber(5, 1) == 255);
+    assert(getColourPairNumber(5, 2) == 255);
+    assert(getColourPairNumber(5, 3) == 255);
+    assert(getColourPairNumber(5, 4) == 255);
+
+    assert(getColourPairNumber(0, 5) == 255);
+    assert(getColourPairNumber(1, 5) == 255);
+    assert(getColourPairNumber(2, 5) == 255);
+    assert(getColourPairNumber(3, 5) == 255);
+    assert(getColourPairNumber(4, 5) == 255);
+
+    /************************* String alignment test ************************/
+    assert(strcmp(GetPrintString(0, "White", "Blue"), "0\tWhite\tBlue\t\n") == 0);
+
+    assert(strcmp(GetPrintString(27, "Orange", "Brown"), "27\tOrange\tBrown\t\n") == 0);
+    assert(strcmp(GetPrintString(42, "Magenta", "Purple"), "42\tMagenta\tPurple\t\n") == 0);
+
+    /************************* printColorMap ****************************/
+    printColorMap(Stub_getColourPairNumber,GetPrintString);
+    printColorMap(getColourPairNumber,Stub_GetPrintString);
+
+    printf("All is well (for sure)\n");
     return 0;
 }
